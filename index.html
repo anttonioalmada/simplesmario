@@ -17,6 +17,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    height: 100vh;           /* 🔑 ocupa a tela */
     touch-action: none;
   }
 
@@ -29,6 +30,7 @@
     border-radius: 16px;
     overflow: hidden;
     margin-top: 12px;
+    flex-shrink: 0;
   }
 
   #game {
@@ -53,14 +55,18 @@
     background: #3CB371;
   }
 
-  /* CONTROLES (COLADOS AO JOGO) */
+  /* ESPAÇO FLEXÍVEL (empurra os botões) */
+  #spacer {
+    flex-grow: 1;   /* 🔥 segredo do posicionamento */
+  }
+
+  /* CONTROLES */
   #controls {
     width: 100%;
     max-width: 420px;
     display: flex;
     justify-content: space-around;
-    margin-top: 8px;
-    margin-bottom: 16px; /* impede sobra gigante */
+    margin-bottom: 180px; /* ajuste fino (área riscada) */
   }
 
   .btn {
@@ -94,6 +100,8 @@
   </div>
 </div>
 
+<div id="spacer"></div>
+
 <div id="controls">
   <div class="btn" id="left">⬅️</div>
   <div class="btn" id="jump">⬆️</div>
@@ -125,7 +133,7 @@ jump.ontouchstart = () => {
   }
 };
 
-/* TECLADO (DESKTOP) */
+/* TECLADO */
 document.addEventListener("keydown", e => {
   if (e.key === "ArrowLeft") moveLeft = true;
   if (e.key === "ArrowRight") moveRight = true;
