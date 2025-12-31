@@ -2,36 +2,78 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Mini Sario Mobile</title>
+
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#87CEEB">
-<title>Mini Mario</title>
+
 <style>
-  body { background:#87CEEB; margin:0; overflow:hidden; }
+  body {
+    margin: 0;
+    overflow: hidden;
+    background: #87CEEB;
+    touch-action: none;
+  }
+
   #game {
     position: relative;
     width: 100vw;
     height: 100vh;
   }
+
   #mario {
     position: absolute;
     width: 50px;
     bottom: 20px;
     left: 50px;
+    user-select: none;
   }
+
   #ground {
-    position:absolute;
-    bottom:0;
-    width:100%;
-    height:20px;
-    background:green;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 20px;
+    background: #3CB371;
+  }
+
+  /* CONTROLES */
+  #controls {
+    position: absolute;
+    bottom: 30px;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    pointer-events: auto;
+  }
+
+  .btn {
+    width: 70px;
+    height: 70px;
+    background: rgba(0,0,0,0.4);
+    color: white;
+    font-size: 30px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
   }
 </style>
 </head>
+
 <body>
 
 <div id="game">
   <img id="mario" src="sario.png">
   <div id="ground"></div>
+
+  <div id="controls">
+    <div class="btn" id="left">⬅️</div>
+    <div class="btn" id="jump">⬆️</div>
+    <div class="btn" id="right">➡️</div>
+  </div>
 </div>
 
 <script>
@@ -42,16 +84,42 @@ let velocityY = 0;
 let gravity = 1;
 let jumping = false;
 
+let moveLeft = false;
+let moveRight = false;
+
+// CONTROLES TOQUE
+document.getElementById("left").ontouchstart = () => moveLeft = true;
+document.getElementById("left").ontouchend = () => moveLeft = false;
+
+document.getElementById("right").ontouchstart = () => moveRight = true;
+document.getElementById("right").ontouchend = () => moveRight = false;
+
+document.getElementById("jump").ontouchstart = () => {
+  if (!jumping) {
+    velocityY = 15;
+    jumping = true;
+  }
+};
+
+// CONTROLE TECLADO (PC)
 document.addEventListener("keydown", e => {
-  if (e.key === "ArrowRight") x += 10;
-  if (e.key === "ArrowLeft") x -= 10;
+  if (e.key === "ArrowLeft") moveLeft = true;
+  if (e.key === "ArrowRight") moveRight = true;
   if (e.key === " " && !jumping) {
     velocityY = 15;
     jumping = true;
   }
 });
 
+document.addEventListener("keyup", e => {
+  if (e.key === "ArrowLeft") moveLeft = false;
+  if (e.key === "ArrowRight") moveRight = false;
+});
+
 function gameLoop() {
+  if (moveLeft) x -= 5;
+  if (moveRight) x += 5;
+
   velocityY -= gravity;
   y += velocityY;
 
@@ -68,11 +136,12 @@ function gameLoop() {
 }
 
 gameLoop();
-</script>
-<script>
+
+// SERVICE WORKER
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("service-worker.js");
 }
 </script>
+
 </body>
 </html>
