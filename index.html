@@ -72,4 +72,93 @@
 
 <div id="game">
   <img id="mario" src="sario.png">
-  <div
+  <div id="ground"></div>
+
+  <div id="controls">
+    <div class="btn" id="left">⬅️</div>
+    <div class="btn" id="jump">⬆️</div>
+    <div class="btn" id="right">➡️</div>
+  </div>
+</div>
+
+<script>
+/* AJUSTE REAL DE ALTURA */
+function setVH() {
+  document.documentElement.style.setProperty(
+    "--vh",
+    window.innerHeight + "px"
+  );
+}
+setVH();
+window.addEventListener("resize", setVH);
+
+/* JOGO */
+let mario = document.getElementById("mario");
+let x = 40;
+let y = 60;
+let velocityY = 0;
+let gravity = 1;
+let jumping = false;
+
+let moveLeft = false;
+let moveRight = false;
+
+/* TOQUE */
+left.ontouchstart = () => moveLeft = true;
+left.ontouchend   = () => moveLeft = false;
+
+right.ontouchstart = () => moveRight = true;
+right.ontouchend   = () => moveRight = false;
+
+jump.ontouchstart = () => {
+  if (!jumping) {
+    velocityY = 16;
+    jumping = true;
+  }
+};
+
+/* TECLADO */
+document.addEventListener("keydown", e => {
+  if (e.key === "ArrowLeft") moveLeft = true;
+  if (e.key === "ArrowRight") moveRight = true;
+  if (e.key === " " && !jumping) {
+    velocityY = 16;
+    jumping = true;
+  }
+});
+
+document.addEventListener("keyup", e => {
+  if (e.key === "ArrowLeft") moveLeft = false;
+  if (e.key === "ArrowRight") moveRight = false;
+});
+
+/* LOOP */
+function gameLoop() {
+  if (moveLeft) x -= 4;
+  if (moveRight) x += 4;
+
+  velocityY -= gravity;
+  y += velocityY;
+
+  if (y <= 60) {
+    y = 60;
+    velocityY = 0;
+    jumping = false;
+  }
+
+  mario.style.left = x + "px";
+  mario.style.bottom = y + "px";
+
+  requestAnimationFrame(gameLoop);
+}
+
+gameLoop();
+
+/* PWA */
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("service-worker.js");
+}
+</script>
+
+</body>
+</html>
