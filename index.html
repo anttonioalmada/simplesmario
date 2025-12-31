@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#87CEEB">
+<title>Mini Mario</title>
+<style>
+  body { background:#87CEEB; margin:0; overflow:hidden; }
+  #game {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+  }
+  #mario {
+    position: absolute;
+    width: 50px;
+    bottom: 20px;
+    left: 50px;
+  }
+  #ground {
+    position:absolute;
+    bottom:0;
+    width:100%;
+    height:20px;
+    background:green;
+  }
+</style>
+</head>
+<body>
+
+<div id="game">
+  <img id="mario" src="sario.png">
+  <div id="ground"></div>
+</div>
+
+<script>
+let mario = document.getElementById("mario");
+let x = 50;
+let y = 20;
+let velocityY = 0;
+let gravity = 1;
+let jumping = false;
+
+document.addEventListener("keydown", e => {
+  if (e.key === "ArrowRight") x += 10;
+  if (e.key === "ArrowLeft") x -= 10;
+  if (e.key === " " && !jumping) {
+    velocityY = 15;
+    jumping = true;
+  }
+});
+
+function gameLoop() {
+  velocityY -= gravity;
+  y += velocityY;
+
+  if (y <= 20) {
+    y = 20;
+    velocityY = 0;
+    jumping = false;
+  }
+
+  mario.style.left = x + "px";
+  mario.style.bottom = y + "px";
+
+  requestAnimationFrame(gameLoop);
+}
+
+gameLoop();
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("service-worker.js");
+}
+</script>
+</body>
+</html>
